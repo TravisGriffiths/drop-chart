@@ -6,22 +6,33 @@ Drop Chart is a plug-in intended to allow for sinple d3 charts to easily be put 
 
 
 (function() {
-  var Chart, ChartFetcher;
+  var Chart, ChartFetcher, Pie,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   ChartFetcher = (function() {
 
     ChartFetcher.prototype.charts = [];
 
     function ChartFetcher() {
-      var chart, _i, _len, _ref;
       this.raw_charts = this.fetchCharts();
+      this.getChartsByType();
+    }
+
+    ChartFetcher.prototype.getChartsByType = function() {
+      var chart, _i, _len, _ref, _results;
       _ref = this.raw_charts;
+      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         chart = _ref[_i];
-        this.charts.push(new Chart(chart));
+        if (jQuery(chart).attr('data-type') === 'pie') {
+          _results.push(this.charts.push(new Pie(chart)));
+        } else {
+          _results.push(void 0);
+        }
       }
-      debugger;
-    }
+      return _results;
+    };
 
     ChartFetcher.prototype.fetchCharts = function() {
       return jQuery(".drop-chart");
@@ -38,6 +49,7 @@ Drop Chart is a plug-in intended to allow for sinple d3 charts to easily be put 
       this.type = jQuery(this.raw).attr('data-type');
       this.source = jQuery(this.raw).attr('data-source');
       this.fetchData();
+      this.draw();
     }
 
     Chart.prototype.fetchData = function() {
@@ -47,6 +59,74 @@ Drop Chart is a plug-in intended to allow for sinple d3 charts to easily be put 
     return Chart;
 
   })();
+
+  Pie = (function(_super) {
+
+    __extends(Pie, _super);
+
+    function Pie() {
+      return Pie.__super__.constructor.apply(this, arguments);
+    }
+
+    Pie.prototype.processData = function() {
+      var datum, lab, processed, val, _i, _len, _ref, _ref1;
+      processed = [];
+      if (this.data.length) {
+        _ref = this.data;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          datum = _ref[_i];
+          processed.push({
+            label: '',
+            value: datum
+          });
+        }
+        return [processed];
+      } else {
+        _ref1 = this.data;
+        for (lab in _ref1) {
+          val = _ref1[lab];
+          processed.push({
+            label: lab,
+            value: val
+          });
+        }
+        return [processed];
+      }
+    };
+
+    Pie.prototype.draw = function() {
+      var arc, arcs, color, h, pie, r, vis, w;
+      w = 600;
+      h = 600;
+      r = 200;
+      color = d3.scale.category20c();
+      /*
+          data = [{"label":"one", "value":20},
+          {"label":"two", "value":50},
+          {"label":"three", "value":30}]
+      */
+
+      vis = d3.select("div.drop-chart").append("svg:svg").data(this.processData()).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+      arc = d3.svg.arc().outerRadius(r);
+      pie = d3.layout.pie().value(function(d) {
+        return d.value;
+      });
+      arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+      arcs.append("svg:path").attr("fill", function(d, i) {
+        return color(i);
+      }).attr("d", arc);
+      return arcs.append("svg:text").attr("transform", function(d) {
+        d.innerRadius = 0;
+        d.outerRadius = r;
+        return "translate(" + arc.centroid(d) + ")";
+      }).attr("text-anchor", "middle").text(function(d) {
+        return d.data.label;
+      });
+    };
+
+    return Pie;
+
+  })(Chart);
 
   jQuery(document).ready(function() {
     return new ChartFetcher();

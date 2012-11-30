@@ -10,9 +10,11 @@ class ChartFetcher
 
   constructor: ->
     @raw_charts = @fetchCharts()
+    @getChartsByType()
+
+  getChartsByType: ->
     for chart in @raw_charts
-      @charts.push(new Chart(chart))
-    debugger
+      @charts.push(new Pie(chart)) if jQuery(chart).attr('data-type') == 'pie'
 
   fetchCharts: ->
     jQuery(".drop-chart")
@@ -24,14 +26,68 @@ class Chart
     @type = jQuery(@raw).attr('data-type')
     @source = jQuery(@raw).attr('data-source')
     @fetchData()
+    @draw()
 
   fetchData: ->
     @data = window[@source]
 
 class Pie extends Chart
 
-  constructor: (@chart) ->
-    debugger
+  processData: ->
+    processed = []
+    if @data.length  # Only arrays, not hashes have length
+      for datum in @data
+        processed.push({label:'', value: datum})
+      return [processed]
+    else
+      for lab, val of @data
+        processed.push({label: lab, value: val})
+      return [processed]
+
+  draw: ->
+
+    w = 600
+    h = 600
+    r = 200
+    color = d3.scale.category20c()
+    ###
+    data = [{"label":"one", "value":20},
+    {"label":"two", "value":50},
+    {"label":"three", "value":30}]
+    ###
+    vis = d3.select("div.drop-chart")
+      .append("svg:svg")
+      .data(@processData())
+      .attr("width", w)
+      .attr("height", h)
+      .append("svg:g")
+      .attr("transform", "translate(" + r + "," + r + ")")
+
+    arc = d3.svg.arc()
+      .outerRadius(r)
+
+    pie = d3.layout.pie()
+      .value((d) ->  d.value)
+
+    arcs = vis.selectAll("g.slice")
+      .data(pie)
+      .enter()
+      .append("svg:g")
+      .attr("class", "slice")
+
+    arcs.append("svg:path")
+      .attr("fill", (d, i) -> color(i))
+      .attr("d", arc)
+
+    arcs.append("svg:text")
+      .attr("transform", (d) ->
+        d.innerRadius = 0;
+        d.outerRadius = r;
+        return "translate(" + arc.centroid(d) + ")"
+      )
+      .attr("text-anchor", "middle")
+      .text((d) -> d.data.label)
+
 
 
 
