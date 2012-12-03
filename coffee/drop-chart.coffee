@@ -7,11 +7,28 @@ Drop Chart is a plug-in intended to allow for sinple d3 charts to easily be put 
 
 jQuery.fn.extend
 
-  dropchart: (options) ->
+  dropchart: (options, obj_hash) ->
 
     unless options?
       jQuery(document).ready ->
         new ChartFetcher()
+    else
+      ###
+        We have options, these may be:
+        true -> run immediately, don't wait for document ready
+        false -> don't run, just return this
+        String -> bind to String event to run the scan
+        String, hash -> execute String method and pass hash
+      ###
+      if options == true
+        -> new ChatFetcher()
+      return @ if options == false
+      if obj_hash? #Do we have a hash argument?
+        return @ #Need a ChartState object...
+      else
+        @.on(options
+          new ChartFetcher()
+        )
 
     class ChartFetcher
 

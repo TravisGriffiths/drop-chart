@@ -12,12 +12,34 @@
 
 
   jQuery.fn.extend({
-    dropchart: function(options) {
+    dropchart: function(options, obj_hash) {
       var Chart, ChartFetcher, Pie;
       if (options == null) {
         jQuery(document).ready(function() {
           return new ChartFetcher();
         });
+      } else {
+        /*
+                We have options, these may be:
+                true -> run immediately, don't wait for document ready
+                false -> don't run, just return this
+                String -> bind to String event to run the scan
+                String, hash -> execute String method and pass hash
+        */
+
+        if (options === true) {
+          (function() {
+            return new ChatFetcher();
+          });
+        }
+        if (options === false) {
+          return this;
+        }
+        if (obj_hash != null) {
+          return this;
+        } else {
+          this.on(options, new ChartFetcher());
+        }
       }
       ChartFetcher = (function() {
 
