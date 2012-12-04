@@ -66,7 +66,7 @@ $.extend $.fn,
         h = 600
         r = 200
         color = @palette
-        vis = d3.select("div.drop-chart")
+        vis = d3.select(@raw)
           .append("svg:svg")
           .data(@processData())
           .attr("width", w)

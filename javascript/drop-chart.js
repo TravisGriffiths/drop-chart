@@ -123,7 +123,7 @@
           h = 600;
           r = 200;
           color = this.palette;
-          vis = d3.select("div.drop-chart").append("svg:svg").data(this.processData()).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+          vis = d3.select(this.raw).append("svg:svg").data(this.processData()).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
           arc = d3.svg.arc().outerRadius(r);
           pie = d3.layout.pie().value(function(d) {
             return d.value;
