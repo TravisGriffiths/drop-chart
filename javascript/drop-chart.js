@@ -12,42 +12,30 @@
 
 
   $.extend($.fn, {
-    dropchart: function(options, obj_hash) {
-      var Chart, ChartFetcher, Pie, paletteFactory;
-      if (options == null) {
-        jQuery(document).ready(function() {
-          return new ChartFetcher();
-        });
-      } else {
-        /*
-                We have options, these may be:
-                true -> run immediately, don't wait for document ready
-                false -> don't run, just return this
-                String -> bind to String event to run the scan
-                String, hash -> execute String method and pass hash
-        */
-
-        if (options) {
-          debugger;
-          new ChartFetcher();
-        }
-        if (options === false) {
-          return this;
-        }
-        if (obj_hash != null) {
-          return this;
-        } else {
-          this.on(options, new ChartFetcher());
-        }
-      }
+    dropchart: function(drop_arg, obj_hash) {
+      var Chart, ChartFetcher, Pie, chartfetcher, clean_arg, paletteFactory;
       ChartFetcher = (function() {
+
+        function ChartFetcher() {}
 
         ChartFetcher.prototype.charts = [];
 
-        function ChartFetcher() {
+        ChartFetcher.prototype.render = function() {
           this.raw_charts = this.fetchCharts();
-          this.getChartsByType();
-        }
+          this.cleanCharts();
+          return this.getChartsByType();
+        };
+
+        ChartFetcher.prototype.cleanCharts = function() {
+          var chart, _i, _len, _ref, _results;
+          _ref = this.raw_charts;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            chart = _ref[_i];
+            _results.push(jQuery(chart).find('svg').remove());
+          }
+          return _results;
+        };
 
         ChartFetcher.prototype.getChartsByType = function() {
           var chart, _i, _len, _ref, _results;
@@ -130,12 +118,6 @@
           h = 600;
           r = 200;
           color = this.palette;
-          /*
-                  data = [{"label":"one", "value":20},
-                  {"label":"two", "value":50},
-                  {"label":"three", "value":30}]
-          */
-
           vis = d3.select("div.drop-chart").append("svg:svg").data(this.processData()).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
           arc = d3.svg.arc().outerRadius(r);
           pie = d3.layout.pie().value(function(d) {
@@ -157,7 +139,7 @@
         return Pie;
 
       })(Chart);
-      return paletteFactory = (function() {
+      paletteFactory = (function() {
 
         paletteFactory.prototype.palettes = {};
 
@@ -185,11 +167,40 @@
           }
         };
 
-        window.paletteFactory = new paletteFactory;
-
         return paletteFactory;
 
       })();
+      chartfetcher = new ChartFetcher();
+      if (drop_arg == null) {
+        return jQuery(document).ready(function() {
+          return chartfetcher.render();
+        });
+      } else {
+        /*
+                We have arguments, these may be:
+                true -> run immediately, don't wait for document ready
+                false -> don't run, just return this
+                String -> bind to String event to run the scan
+                String, hash -> execute String method and pass hash
+        */
+
+        clean_arg = String(drop_arg);
+        if (clean_arg === 'true') {
+          chartfetcher.render();
+          return this;
+        }
+        if (clean_arg === 'false') {
+          return this;
+        }
+        if (obj_hash != null) {
+          return this;
+        } else {
+          this.on(clean_arg, function() {
+            return chartfetcher.render();
+          });
+          return this;
+        }
+      }
     }
   });
 

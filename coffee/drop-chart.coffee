@@ -7,37 +7,21 @@ Drop Chart is a plug-in intended to allow for sinple d3 charts to easily be put 
 
 $.extend $.fn,
 
-  dropchart: (options, obj_hash) ->
-
-    unless options?
-      jQuery(document).ready ->
-        new ChartFetcher()
-    else
-      ###
-        We have options, these may be:
-        true -> run immediately, don't wait for document ready
-        false -> don't run, just return this
-        String -> bind to String event to run the scan
-        String, hash -> execute String method and pass hash
-      ###
-      if options
-        debugger
-        new ChartFetcher()
-      return @ if options == false
-      if obj_hash? #Do we have a hash argument?
-        return @ #Need a ChartState object...
-      else
-        @.on(options
-          new ChartFetcher()
-        )
+  dropchart: (drop_arg, obj_hash) ->
 
     class ChartFetcher
 
       charts: []
 
-      constructor: ->
+      render: ->
         @raw_charts = @fetchCharts()
+        @cleanCharts()
         @getChartsByType()
+
+      #If this is being called post render we need to remove the former chart
+      cleanCharts: ->
+        for chart in @raw_charts
+          jQuery(chart).find('svg').remove()
 
       getChartsByType: ->
         for chart in @raw_charts
@@ -47,7 +31,7 @@ $.extend $.fn,
         jQuery(".drop-chart")
 
 
-    class Chart
+    class Chart  #abstract class
 
       constructor: (@raw) ->
         @palFac = new paletteFactory()
@@ -78,12 +62,7 @@ $.extend $.fn,
         w = 600
         h = 600
         r = 200
-        color = @palette #d3.scale.category20c()
-        ###
-        data = [{"label":"one", "value":20},
-        {"label":"two", "value":50},
-        {"label":"three", "value":30}]
-        ###
+        color = @palette
         vis = d3.select("div.drop-chart")
           .append("svg:svg")
           .data(@processData())
@@ -170,5 +149,28 @@ $.extend $.fn,
         else
           @palettes[palette]
 
+    chartfetcher = new ChartFetcher()
 
-      window.paletteFactory = new paletteFactory
+    unless drop_arg?
+      jQuery(document).ready ->
+        chartfetcher.render()
+    else
+      ###
+        We have arguments, these may be:
+        true -> run immediately, don't wait for document ready
+        false -> don't run, just return this
+        String -> bind to String event to run the scan
+        String, hash -> execute String method and pass hash
+      ###
+      clean_arg = String(drop_arg) #some bugs come up when this is mixed type
+      if clean_arg == 'true'
+        chartfetcher.render()
+        return @
+      return @ if clean_arg == 'false'
+      if obj_hash? #Do we have a hash argument?
+        return @ #Need a ChartState object...
+      else
+        @.on(clean_arg, ->
+          chartfetcher.render()
+        )
+        @
