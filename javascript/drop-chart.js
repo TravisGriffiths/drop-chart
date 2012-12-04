@@ -13,8 +13,7 @@
 
   $.extend($.fn, {
     dropchart: function(drop_arg, obj_hash) {
-      var Chart, ChartFetcher, Pie, a, paletteFactory;
-      a = "ping";
+      var Chart, ChartFetcher, Pie, paletteFactory;
       ChartFetcher = (function() {
 
         function ChartFetcher() {}
@@ -191,9 +190,7 @@
         chartfetcher = new obj_hash.dropobjects.chartfetcher();
         chartfetcher.setScope(this);
         if (drop_arg == null) {
-          return jQuery(document).ready(function() {
-            return chartfetcher.render();
-          });
+          return chartfetcher.render();
         } else {
           /*
                     We have arguments, these may be:

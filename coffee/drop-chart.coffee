@@ -8,7 +8,6 @@ Drop Chart is a plug-in intended to allow for sinple d3 charts to easily be put 
 $.extend $.fn,
 
   dropchart: (drop_arg, obj_hash) ->
-    a = "ping"
 
     class ChartFetcher
 
@@ -162,8 +161,7 @@ $.extend $.fn,
       chartfetcher.setScope(@)
 
       unless drop_arg?
-        jQuery(document).ready ->
-          chartfetcher.render()
+        chartfetcher.render()
       else
         ###
           We have arguments, these may be:
