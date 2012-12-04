@@ -135,8 +135,6 @@ $.extend $.fn,
       else
         ###
           We have arguments, these may be:
-          true -> run immediately, don't wait for document ready
-          false -> don't run, just return this
           String -> bind to String event to run the scan
           String, hash -> execute String method and pass hash
         ###
