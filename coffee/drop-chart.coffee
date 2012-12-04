@@ -49,6 +49,8 @@ jQuery.fn.extend
     class Chart
 
       constructor: (@raw) ->
+        @palFac = new paletteFactory()
+        @palette = @palFac.getPalette('general')
         @type = jQuery(@raw).attr('data-type')
         @source = jQuery(@raw).attr('data-source')
         @fetchData()
@@ -75,7 +77,7 @@ jQuery.fn.extend
         w = 600
         h = 600
         r = 200
-        color = d3.scale.category20c()
+        color = @palette #d3.scale.category20c()
         ###
         data = [{"label":"one", "value":20},
         {"label":"two", "value":50},
@@ -113,3 +115,54 @@ jQuery.fn.extend
           )
           .attr("text-anchor", "middle")
           .text((d) -> d.data.label)
+
+    class paletteFactory
+      palettes: {}
+      constructor: ->
+        @palettes['general'] = (i) ->
+          colors = [
+            "#ea4f4f",
+            "#3e499f",
+            "#cece29",
+            "#106735",
+            "#d16a28",
+            "#6f2a82",
+            "#c56156",
+            "#53548e",
+            "#d8d65a",
+            "#2bb673",
+            "#d88349",
+            "#845194",
+            "#ea7db0",
+            "#747dbc",
+            "#e0de84",
+            "#8ecea5",
+            "#e8b087",
+            "#766692",
+            "#df9ac4",
+            "#bec2e2",
+            "#f7f385",
+            "#d7ecdd",
+            "#f6dcc6",
+            "#b59bc2"
+          ]
+          colors[i % colors.length]
+
+        #d3 standard palettes
+        @palettes['category10'] = d3.scale.category10()
+        @palettes['category20'] = d3.scale.category20()
+        @palettes['category20b'] = d3.scale.category20b()
+        @palettes['category20c'] = d3.scale.category20c()
+
+
+      registerNewPalette: (paletteName ,palette) ->
+        @palettes[paletteName] = palette
+
+      getPalette: (palette) ->
+        unless palette?
+          @palettes['basic']
+        else
+          @palettes[palette]
+
+
+      window.paletteFactory = new paletteFactory

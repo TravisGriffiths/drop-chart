@@ -13,7 +13,7 @@
 
   jQuery.fn.extend({
     dropchart: function(options, obj_hash) {
-      var Chart, ChartFetcher, Pie;
+      var Chart, ChartFetcher, Pie, paletteFactory;
       if (options == null) {
         jQuery(document).ready(function() {
           return new ChartFetcher();
@@ -76,6 +76,8 @@
 
         function Chart(raw) {
           this.raw = raw;
+          this.palFac = new paletteFactory();
+          this.palette = this.palFac.getPalette('general');
           this.type = jQuery(this.raw).attr('data-type');
           this.source = jQuery(this.raw).attr('data-source');
           this.fetchData();
@@ -89,7 +91,7 @@
         return Chart;
 
       })();
-      return Pie = (function(_super) {
+      Pie = (function(_super) {
 
         __extends(Pie, _super);
 
@@ -128,7 +130,7 @@
           w = 600;
           h = 600;
           r = 200;
-          color = d3.scale.category20c();
+          color = this.palette;
           /*
                   data = [{"label":"one", "value":20},
                   {"label":"two", "value":50},
@@ -156,6 +158,39 @@
         return Pie;
 
       })(Chart);
+      return paletteFactory = (function() {
+
+        paletteFactory.prototype.palettes = {};
+
+        function paletteFactory() {
+          this.palettes['general'] = function(i) {
+            var colors;
+            colors = ["#ea4f4f", "#3e499f", "#cece29", "#106735", "#d16a28", "#6f2a82", "#c56156", "#53548e", "#d8d65a", "#2bb673", "#d88349", "#845194", "#ea7db0", "#747dbc", "#e0de84", "#8ecea5", "#e8b087", "#766692", "#df9ac4", "#bec2e2", "#f7f385", "#d7ecdd", "#f6dcc6", "#b59bc2"];
+            return colors[i % colors.length];
+          };
+          this.palettes['category10'] = d3.scale.category10();
+          this.palettes['category20'] = d3.scale.category20();
+          this.palettes['category20b'] = d3.scale.category20b();
+          this.palettes['category20c'] = d3.scale.category20c();
+        }
+
+        paletteFactory.prototype.registerNewPalette = function(paletteName, palette) {
+          return this.palettes[paletteName] = palette;
+        };
+
+        paletteFactory.prototype.getPalette = function(palette) {
+          if (palette == null) {
+            return this.palettes['basic'];
+          } else {
+            return this.palettes[palette];
+          }
+        };
+
+        window.paletteFactory = new paletteFactory;
+
+        return paletteFactory;
+
+      })();
     }
   });
 
