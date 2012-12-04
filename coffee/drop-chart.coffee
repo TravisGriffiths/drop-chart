@@ -8,8 +8,8 @@ Drop Chart is a plug-in intended to allow for sinple d3 charts to easily be put 
 $.extend $.fn,
 
   dropchart: (drop_arg, obj_hash) ->
+    a = "ping"
 
-    debugger
     class ChartFetcher
 
       charts: []
@@ -149,29 +149,33 @@ $.extend $.fn,
           @palettes['basic']
         else
           @palettes[palette]
-
-    chartfetcher = new ChartFetcher()
-
-    unless drop_arg?
-      jQuery(document).ready ->
-        chartfetcher.render()
-    else
-      ###
-        We have arguments, these may be:
-        true -> run immediately, don't wait for document ready
-        false -> don't run, just return this
-        String -> bind to String event to run the scan
-        String, hash -> execute String method and pass hash
-      ###
-      clean_arg = String(drop_arg) #some bugs come up when this is mixed type
-      if clean_arg == 'true'
-        chartfetcher.render()
-        return @
-      return @ if clean_arg == 'false'
-      if obj_hash? #Do we have a hash argument?
-        return @ #Need a ChartState object...
-      else
-        @.on(clean_arg, ->
+    if obj_hash then obj_hash.data = obj_hash else obj_hash = {}
+    obj_hash.dropobjects =
+      chartfetcher: ChartFetcher
+      chart: Chart
+      pie: Pie
+    $.extend(drop_arg, obj_hash)
+    @each  ->
+      unless drop_arg?
+        jQuery(document).ready ->
           chartfetcher.render()
-        )
-        @
+      else
+        ###
+          We have arguments, these may be:
+          true -> run immediately, don't wait for document ready
+          false -> don't run, just return this
+          String -> bind to String event to run the scan
+          String, hash -> execute String method and pass hash
+        ###
+        clean_arg = String(drop_arg) #some bugs come up when this is mixed type
+        if clean_arg == 'true'
+          chartfetcher.render()
+          return @
+        return @ if clean_arg == 'false'
+        if obj_hash? #Do we have a hash argument?
+          return @ #Need a ChartState object...
+        else
+          @.on(clean_arg, ->
+            chartfetcher.render()
+          )
+          @

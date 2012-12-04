@@ -13,8 +13,8 @@
 
   $.extend($.fn, {
     dropchart: function(drop_arg, obj_hash) {
-      debugger;
-      var Chart, ChartFetcher, Pie, chartfetcher, clean_arg, paletteFactory;
+      var Chart, ChartFetcher, Pie, a, paletteFactory;
+      a = "ping";
       ChartFetcher = (function() {
 
         function ChartFetcher() {}
@@ -171,37 +171,51 @@
         return paletteFactory;
 
       })();
-      chartfetcher = new ChartFetcher();
-      if (drop_arg == null) {
-        return jQuery(document).ready(function() {
-          return chartfetcher.render();
-        });
+      if (obj_hash) {
+        obj_hash.data = obj_hash;
       } else {
-        /*
-                We have arguments, these may be:
-                true -> run immediately, don't wait for document ready
-                false -> don't run, just return this
-                String -> bind to String event to run the scan
-                String, hash -> execute String method and pass hash
-        */
-
-        clean_arg = String(drop_arg);
-        if (clean_arg === 'true') {
-          chartfetcher.render();
-          return this;
-        }
-        if (clean_arg === 'false') {
-          return this;
-        }
-        if (obj_hash != null) {
-          return this;
-        } else {
-          this.on(clean_arg, function() {
+        obj_hash = {};
+      }
+      obj_hash.dropobjects = {
+        chartfetcher: ChartFetcher,
+        chart: Chart,
+        pie: Pie
+      };
+      $.extend(drop_arg, obj_hash);
+      return this.each(function() {
+        debugger;
+        var clean_arg;
+        if (drop_arg == null) {
+          return jQuery(document).ready(function() {
             return chartfetcher.render();
           });
-          return this;
+        } else {
+          /*
+                    We have arguments, these may be:
+                    true -> run immediately, don't wait for document ready
+                    false -> don't run, just return this
+                    String -> bind to String event to run the scan
+                    String, hash -> execute String method and pass hash
+          */
+
+          clean_arg = String(drop_arg);
+          if (clean_arg === 'true') {
+            chartfetcher.render();
+            return this;
+          }
+          if (clean_arg === 'false') {
+            return this;
+          }
+          if (obj_hash != null) {
+            return this;
+          } else {
+            this.on(clean_arg, function() {
+              return chartfetcher.render();
+            });
+            return this;
+          }
         }
-      }
+      });
     }
   });
 
