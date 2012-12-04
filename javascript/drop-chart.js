@@ -53,8 +53,12 @@
           return _results;
         };
 
+        ChartFetcher.prototype.setScope = function(dom_obj) {
+          this.dom_obj = dom_obj;
+        };
+
         ChartFetcher.prototype.fetchCharts = function() {
-          return jQuery(".drop-chart");
+          return jQuery(this.dom_obj);
         };
 
         return ChartFetcher;
@@ -183,8 +187,9 @@
       };
       $.extend(drop_arg, obj_hash);
       return this.each(function() {
-        debugger;
-        var clean_arg;
+        var chartfetcher, clean_arg;
+        chartfetcher = new obj_hash.dropobjects.chartfetcher();
+        chartfetcher.setScope(this);
         if (drop_arg == null) {
           return jQuery(document).ready(function() {
             return chartfetcher.render();

@@ -28,8 +28,10 @@ $.extend $.fn,
         for chart in @raw_charts
           @charts.push(new Pie(chart)) if jQuery(chart).attr('data-type') == 'pie'
 
+      setScope: (@dom_obj) ->
+
       fetchCharts: ->
-        jQuery(".drop-chart")
+        jQuery(@dom_obj)
 
 
     class Chart  #abstract class
@@ -156,6 +158,9 @@ $.extend $.fn,
       pie: Pie
     $.extend(drop_arg, obj_hash)
     @each  ->
+      chartfetcher = new obj_hash.dropobjects.chartfetcher()
+      chartfetcher.setScope(@)
+
       unless drop_arg?
         jQuery(document).ready ->
           chartfetcher.render()
