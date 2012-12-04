@@ -13,6 +13,7 @@
 
   $.extend($.fn, {
     dropchart: function(drop_arg, obj_hash) {
+      debugger;
       var Chart, ChartFetcher, Pie, chartfetcher, clean_arg, paletteFactory;
       ChartFetcher = (function() {
 
