@@ -102,37 +102,7 @@ $.extend $.fn,
       palettes: {}
       constructor: ->
         @palettes['general'] = (i) ->
-          colors = [
-            "#bc1c5a",
-            "#096ab1",
-            "#f2cf57",
-            "#199468",
-            "#f7230e",
-            "#5f64c8",
-            "#ffcd04",
-            "#d8f20d",
-            "#12cfb1",
-            "#5f64c8",
-            "#4cb9bc",
-            "#c56156",
-            "#53548e",
-            "#d8d65a",
-            "#845194",
-            "#2bb673",
-            "#d88349",
-            "#ea7db0",
-            "#747dbc",
-            "#e0de84",
-            "#766692",
-            "#8ecea5",
-            "#e8b087",
-            "#df9ac4",
-            "#bec2e2",
-            "#f7f385",
-            "#b59bc2",
-            "#d7ecdd",
-            "#f6dcc6"
-          ]
+          colors = ["#bc1c5a", "#096ab1", "#f2cf57", "#199468", "#f7230e", "#5f64c8", "#d8f20d", "#12cfb1", "#ffcd04", "#c56156", "#53548e", "#845194", "#4cb9bc", "#2bb673", "#ff9600", "#c72f48", "#65286b", "#69db45", "#0a8dc1", "#fda819", "#ff88df", "#b5ed2c", "#fcf5a5"]
           colors[i % colors.length]
 
         #d3 standard palettes
@@ -171,13 +141,10 @@ $.extend $.fn,
           String, hash -> execute String method and pass hash
         ###
         clean_arg = String(drop_arg) #some bugs come up when this is mixed type
-        if clean_arg == 'true'
-          chartfetcher.render()
-          return @
-        return @ if clean_arg == 'false'
         if obj_hash? #Do we have a hash argument?
           return @ #Need a ChartState object...
         else
+          debugger
           @.on(clean_arg, ->
             chartfetcher.render()
           )

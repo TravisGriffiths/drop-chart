@@ -150,7 +150,7 @@
         function paletteFactory() {
           this.palettes['general'] = function(i) {
             var colors;
-            colors = ["#bc1c5a", "#096ab1", "#f2cf57", "#199468", "#f7230e", "#5f64c8", "#ffcd04", "#d8f20d", "#12cfb1", "#5f64c8", "#4cb9bc", "#c56156", "#53548e", "#d8d65a", "#845194", "#2bb673", "#d88349", "#ea7db0", "#747dbc", "#e0de84", "#766692", "#8ecea5", "#e8b087", "#df9ac4", "#bec2e2", "#f7f385", "#b59bc2", "#d7ecdd", "#f6dcc6"];
+            colors = ["#bc1c5a", "#096ab1", "#f2cf57", "#199468", "#f7230e", "#5f64c8", "#d8f20d", "#12cfb1", "#ffcd04", "#c56156", "#53548e", "#845194", "#4cb9bc", "#2bb673", "#ff9600", "#c72f48", "#65286b", "#69db45", "#0a8dc1", "#fda819", "#ff88df", "#b5ed2c", "#fcf5a5"];
             return colors[i % colors.length];
           };
           this.palettes['category10'] = d3.scale.category10();
@@ -201,16 +201,10 @@
           */
 
           clean_arg = String(drop_arg);
-          if (clean_arg === 'true') {
-            chartfetcher.render();
-            return this;
-          }
-          if (clean_arg === 'false') {
-            return this;
-          }
           if (obj_hash != null) {
             return this;
           } else {
+            debugger;
             this.on(clean_arg, function() {
               return chartfetcher.render();
             });
