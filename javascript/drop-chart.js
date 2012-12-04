@@ -11,7 +11,7 @@
   */
 
 
-  jQuery.fn.extend({
+  $.extend($.fn, {
     dropchart: function(options, obj_hash) {
       var Chart, ChartFetcher, Pie, paletteFactory;
       if (options == null) {
@@ -27,10 +27,9 @@
                 String, hash -> execute String method and pass hash
         */
 
-        if (options === true) {
-          (function() {
-            return new ChatFetcher();
-          });
+        if (options) {
+          debugger;
+          new ChartFetcher();
         }
         if (options === false) {
           return this;

@@ -5,7 +5,7 @@ Drop Chart is a plug-in intended to allow for sinple d3 charts to easily be put 
 
 ###
 
-jQuery.fn.extend
+$.extend $.fn,
 
   dropchart: (options, obj_hash) ->
 
@@ -20,8 +20,9 @@ jQuery.fn.extend
         String -> bind to String event to run the scan
         String, hash -> execute String method and pass hash
       ###
-      if options == true
-        -> new ChatFetcher()
+      if options
+        debugger
+        new ChartFetcher()
       return @ if options == false
       if obj_hash? #Do we have a hash argument?
         return @ #Need a ChartState object...
