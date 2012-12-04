@@ -121,10 +121,10 @@ jQuery.fn.extend
       constructor: ->
         @palettes['general'] = (i) ->
           colors = [
-            #"#bc1c5a",
-            #"#096ab1",
-            #"#f2cf57",
-            #"#199468",
+            "#bc1c5a",
+            "#096ab1",
+            "#f2cf57",
+            "#199468",
             "#f7230e",
             "#5f64c8",
             "#ffcd04",
