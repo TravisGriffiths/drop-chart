@@ -165,7 +165,7 @@
         function paletteFactory() {
           this.palettes['general'] = function(i) {
             var colors;
-            colors = [];
+            colors = ['#ea7db0', '#df9ac4', '#ea4f4f', '#c56156', '#53548e', '#747dbc', '#bec2e2', '#3e499f', '#747dbc', '#bec2e2', '#3e499f', '#53548e', '#8ecea5', '#106735', '#2bb673', '#d7ecdd', '#f6dcc6', '#e8b087', '#d16a28', '#d88349', '#766692', '#845194', '#6f2a82', '#b59bc2'];
             return colors[i % colors.length];
           };
           this.palettes['category10'] = d3.scale.category10();
