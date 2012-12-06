@@ -6,31 +6,31 @@ define ['d3'], (d3)->
       constructor: ->
         @palettes['general'] = (i) ->
           colors = [
-            #ea7db0,
-            #df9ac4,
-            #ea4f4f,
-            #c56156,
-            #53548e,
-            #747dbc,
-            #bec2e2,
-            #3e499f,
-            #747dbc,
-            #bec2e2,
-            #3e499f,
-            #53548e,
-            #8ecea5,
-            #106735,
-            #2bb673,
-            #d7ecdd,
-            #f6dcc6,
-            #e8b087,
-            #d16a28,
-            #d88349,
-            #766692,
-            #845194,
-            #6f2a82,
-            #b59bc2
-          ]
+            "#ea4f4f",
+            "#3e499f",
+            "#cece29",
+            "#106735",
+            "#ff2217",
+            "#6d579f",
+            "#ffcd04",
+            "#4cb9bc",
+            "#e87175",
+            "#f8c100",
+            "#2dbf80",
+            "#9d34cc",
+            "#12cfb1",
+            "#747dbc",
+            "#e0de84",
+            "#8ecea5",
+            "#e8b087",
+            "#766692",
+            "#df9ac4",
+            "#bec2e2",
+            "#f7f385",
+            "#d7ecdd",
+            "#f6dcc6",
+            "#b59bc2"
+            ]
           colors[i % colors.length]
 
         #d3 standard palettes
