@@ -11,44 +11,31 @@
   */
 
 
-  jQuery.fn.extend({
-    dropchart: function(options, obj_hash) {
+  $.extend($.fn, {
+    dropchart: function(drop_arg, obj_hash) {
       var Chart, ChartFetcher, Pie, paletteFactory;
-      if (options == null) {
-        jQuery(document).ready(function() {
-          return new ChartFetcher();
-        });
-      } else {
-        /*
-                We have options, these may be:
-                true -> run immediately, don't wait for document ready
-                false -> don't run, just return this
-                String -> bind to String event to run the scan
-                String, hash -> execute String method and pass hash
-        */
-
-        if (options === true) {
-          (function() {
-            return new ChatFetcher();
-          });
-        }
-        if (options === false) {
-          return this;
-        }
-        if (obj_hash != null) {
-          return this;
-        } else {
-          this.on(options, new ChartFetcher());
-        }
-      }
       ChartFetcher = (function() {
+
+        function ChartFetcher() {}
 
         ChartFetcher.prototype.charts = [];
 
-        function ChartFetcher() {
+        ChartFetcher.prototype.render = function() {
           this.raw_charts = this.fetchCharts();
-          this.getChartsByType();
-        }
+          this.cleanCharts();
+          return this.getChartsByType();
+        };
+
+        ChartFetcher.prototype.cleanCharts = function() {
+          var chart, _i, _len, _ref, _results;
+          _ref = this.raw_charts;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            chart = _ref[_i];
+            _results.push(jQuery(chart).find('svg').remove());
+          }
+          return _results;
+        };
 
         ChartFetcher.prototype.getChartsByType = function() {
           var chart, _i, _len, _ref, _results;
@@ -65,8 +52,12 @@
           return _results;
         };
 
+        ChartFetcher.prototype.setScope = function(dom_obj) {
+          this.dom_obj = dom_obj;
+        };
+
         ChartFetcher.prototype.fetchCharts = function() {
-          return jQuery(".drop-chart");
+          return jQuery(this.dom_obj);
         };
 
         return ChartFetcher;
@@ -131,13 +122,7 @@
           h = 600;
           r = 200;
           color = this.palette;
-          /*
-                  data = [{"label":"one", "value":20},
-                  {"label":"two", "value":50},
-                  {"label":"three", "value":30}]
-          */
-
-          vis = d3.select("div.drop-chart").append("svg:svg").data(this.processData()).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+          vis = d3.select(this.raw).append("svg:svg").data(this.processData()).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
           arc = d3.svg.arc().outerRadius(r);
           pie = d3.layout.pie().value(function(d) {
             return d.value;
@@ -158,7 +143,7 @@
         return Pie;
 
       })(Chart);
-      return paletteFactory = (function() {
+      paletteFactory = (function() {
 
         paletteFactory.prototype.palettes = {};
 
@@ -186,11 +171,47 @@
           }
         };
 
-        window.paletteFactory = new paletteFactory;
-
         return paletteFactory;
 
       })();
+      if (obj_hash) {
+        obj_hash.data = obj_hash;
+      } else {
+        obj_hash = {};
+      }
+      obj_hash.dropobjects = {
+        chartfetcher: ChartFetcher,
+        chart: Chart,
+        pie: Pie
+      };
+      $.extend(drop_arg, obj_hash);
+      return this.each(function() {
+        var chartfetcher, clean_arg;
+        chartfetcher = new obj_hash.dropobjects.chartfetcher();
+        chartfetcher.setScope(this);
+        if (drop_arg == null) {
+          return chartfetcher.render();
+        } else {
+          /*
+                    We have arguments, these may be:
+                    true -> run immediately, don't wait for document ready
+                    false -> don't run, just return this
+                    String -> bind to String event to run the scan
+                    String, hash -> execute String method and pass hash
+          */
+
+          clean_arg = String(drop_arg);
+          if (obj_hash != null) {
+            return this;
+          } else {
+            debugger;
+            this.on(clean_arg, function() {
+              return chartfetcher.render();
+            });
+            return this;
+          }
+        }
+      });
     }
   });
 

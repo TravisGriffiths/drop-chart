@@ -5,48 +5,35 @@ Drop Chart is a plug-in intended to allow for sinple d3 charts to easily be put 
 
 ###
 
-jQuery.fn.extend
+$.extend $.fn,
 
-  dropchart: (options, obj_hash) ->
-
-    unless options?
-      jQuery(document).ready ->
-        new ChartFetcher()
-    else
-      ###
-        We have options, these may be:
-        true -> run immediately, don't wait for document ready
-        false -> don't run, just return this
-        String -> bind to String event to run the scan
-        String, hash -> execute String method and pass hash
-      ###
-      if options == true
-        -> new ChatFetcher()
-      return @ if options == false
-      if obj_hash? #Do we have a hash argument?
-        return @ #Need a ChartState object...
-      else
-        @.on(options
-          new ChartFetcher()
-        )
+  dropchart: (drop_arg, obj_hash) ->
 
     class ChartFetcher
 
       charts: []
 
-      constructor: ->
+      render: ->
         @raw_charts = @fetchCharts()
+        @cleanCharts()
         @getChartsByType()
+
+      #If this is being called post render we need to remove the former chart
+      cleanCharts: ->
+        for chart in @raw_charts
+          jQuery(chart).find('svg').remove()
 
       getChartsByType: ->
         for chart in @raw_charts
           @charts.push(new Pie(chart)) if jQuery(chart).attr('data-type') == 'pie'
 
+      setScope: (@dom_obj) ->
+
       fetchCharts: ->
-        jQuery(".drop-chart")
+        jQuery(@dom_obj)
 
 
-    class Chart
+    class Chart  #abstract class
 
       constructor: (@raw) ->
         @palFac = new paletteFactory()
@@ -77,13 +64,8 @@ jQuery.fn.extend
         w = 600
         h = 600
         r = 200
-        color = @palette #d3.scale.category20c()
-        ###
-        data = [{"label":"one", "value":20},
-        {"label":"two", "value":50},
-        {"label":"three", "value":30}]
-        ###
-        vis = d3.select("div.drop-chart")
+        color = @palette
+        vis = d3.select(@raw)
           .append("svg:svg")
           .data(@processData())
           .attr("width", w)
@@ -120,31 +102,7 @@ jQuery.fn.extend
       palettes: {}
       constructor: ->
         @palettes['general'] = (i) ->
-          colors = [
-            "#bc1c5a",
-            "#096ab1",
-            "#f2cf57",
-            "#199468",
-            "#f7230e",
-            "#5f64c8",
-            "#d8f20d",
-            "#12cfb1",
-            "#ffcd04",
-            "#c56156",
-            "#53548e",
-            "#845194",
-            "#4cb9bc",
-            "#2bb673",
-            "#ff9600",
-            "#c72f48",
-            "#65286b",
-            "#69db45",
-            "#0a8dc1",
-            "#fda819",
-            "#ff88df",
-            "#b5ed2c",
-            "#fcf5a5",
-          ]
+          colors = ["#bc1c5a", "#096ab1", "#f2cf57", "#199468", "#f7230e", "#5f64c8", "#d8f20d", "#12cfb1", "#ffcd04", "#c56156", "#53548e", "#845194", "#4cb9bc", "#2bb673", "#ff9600", "#c72f48", "#65286b", "#69db45", "#0a8dc1", "#fda819", "#ff88df", "#b5ed2c", "#fcf5a5"]
           colors[i % colors.length]
 
         #d3 standard palettes
@@ -162,6 +120,32 @@ jQuery.fn.extend
           @palettes['basic']
         else
           @palettes[palette]
+    if obj_hash then obj_hash.data = obj_hash else obj_hash = {}
+    obj_hash.dropobjects =
+      chartfetcher: ChartFetcher
+      chart: Chart
+      pie: Pie
+    $.extend(drop_arg, obj_hash)
+    @each  ->
+      chartfetcher = new obj_hash.dropobjects.chartfetcher()
+      chartfetcher.setScope(@)
 
-
-      window.paletteFactory = new paletteFactory
+      unless drop_arg?
+        chartfetcher.render()
+      else
+        ###
+          We have arguments, these may be:
+          true -> run immediately, don't wait for document ready
+          false -> don't run, just return this
+          String -> bind to String event to run the scan
+          String, hash -> execute String method and pass hash
+        ###
+        clean_arg = String(drop_arg) #some bugs come up when this is mixed type
+        if obj_hash? #Do we have a hash argument?
+          return @ #Need a ChartState object...
+        else
+          debugger
+          @.on(clean_arg, ->
+            chartfetcher.render()
+          )
+          @

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drop Chart Examples</title>
+
+    <!-- Need to import jQuery -->
+    <script type="text/javascript" src="../javascript/jquery-1.8.3.min.js"></script>
+
+    <!-- Need to import the D3 library -->
+    <script type="text/javascript" src="../javascript/d3.v2.min.js"></script>
+
+    <!-- Import the drop-chart plug-in -->
+    <script type="text/javascript" src="../javascript/drop-chart.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+</head>
+<body>
+
+<script type="text/javascript">
+    one_data = {
+        "Food": 1,
+        "Entertainment": 3,
+        "Savings": 3,
+        "Rent": 5
+    };
+    //Just show chart 2
+    $(document).ready(function () {
+        $('#chart2').dropchart();
+    });
+</script>
+
+<h2>Chart One</h2>
+<div id="chart1" class='drop-chart' data-type='pie' data-source='one_data'></div>
+
+<h2>Chart Two</h2>
+<div id="chart2" class='drop-chart' data-type='pie' data-source='one_data'></div>
+
+<h2>Chart Three</h2>
+<div id="chart3" class='drop-chart' data-type='pie' data-source='one_data'></div>
+
+</body>
+</html>
