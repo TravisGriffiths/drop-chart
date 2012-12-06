@@ -13,6 +13,7 @@
 
   $.extend($.fn, {
     dropchart: function(drop_arg, obj_hash) {
+      debugger;
       var Chart, ChartFetcher, Pie, paletteFactory;
       ChartFetcher = (function() {
 
@@ -68,7 +69,8 @@
         function Chart(raw) {
           this.raw = raw;
           this.palFac = new paletteFactory();
-          this.palette = this.palFac.getPalette('general');
+          debugger;
+          this.palette = this.palFac.getPalette('earth');
           this.type = jQuery(this.raw).attr('data-type');
           this.source = jQuery(this.raw).attr('data-source');
           this.fetchData();
@@ -118,9 +120,9 @@
 
         Pie.prototype.draw = function() {
           var arc, arcs, color, h, pie, r, vis, w;
-          w = 600;
-          h = 600;
-          r = 200;
+          w = 1000;
+          h = 1000;
+          r = 450;
           color = this.palette;
           vis = d3.select(this.raw).append("svg:svg").data(this.processData()).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
           arc = d3.svg.arc().outerRadius(r);
@@ -148,9 +150,24 @@
         paletteFactory.prototype.palettes = {};
 
         function paletteFactory() {
-          this.palettes['general'] = function(i) {
+          this.palettes['basic'] = function(i) {
             var colors;
             colors = ["#bc1c5a", "#096ab1", "#f2cf57", "#199468", "#f7230e", "#5f64c8", "#d8f20d", "#12cfb1", "#ffcd04", "#c56156", "#53548e", "#845194", "#4cb9bc", "#2bb673", "#ff9600", "#c72f48", "#65286b", "#69db45", "#0a8dc1", "#fda819", "#ff88df", "#b5ed2c", "#fcf5a5"];
+            return colors[i % colors.length];
+          };
+          this.palettes['cool'] = function(i) {
+            var colors;
+            colors = ["#26499d", "#92b8e9", "#4b6cbb", "#d4f0ff", "#99b8fb", "#a3cfff", "#0b3eb3", "#5b86f7", "#cbdee2", "#9ec5cc", "#697fef", "#2f50c1", "#6db2ff", "#6691ef", "#d5f0ff", "#7db5d0", "#99c0dd", "#4584c9", "#9dbdfa", "#2d6dd7"];
+            return colors[i % colors.length];
+          };
+          this.palettes['warm'] = function(i) {
+            var colors;
+            colors = ["#ffae1a", "#d0361c", "#c52108", "#f47202", "#dba602", "#cd270f", "#fcd37b", "#ffb314", "#d10909", "#ffc511", "#ec6d20", "#e2ab97", "#b96632", "#d10909", "#ea7741", "#fc3200", "#ffb64c", "#790908", "#d01a0d", "#ffd109"];
+            return colors[i % colors.length];
+          };
+          this.palettes['earth'] = function(i) {
+            var colors;
+            colors = ["#fbad25", "#8f511e", "#55763f", "#bd8b68", "#bb3e28", "#d4801e", "#ffc233", "#616d01", "#e6c236", "#c4d032", "#325a42", "#702f11", "#6db2ff", "#953d27", "#8dab9f", "#b8b580", "#99c296", "#4584c9", "#732123", "#903837"];
             return colors[i % colors.length];
           };
           this.palettes['category10'] = d3.scale.category10();
@@ -174,6 +191,10 @@
         return paletteFactory;
 
       })();
+      /*
+            Load up our data object with all needed code and extend jQuery such that it can be called for each calls.
+      */
+
       if (obj_hash) {
         obj_hash.data = obj_hash;
       } else {
@@ -194,8 +215,6 @@
         } else {
           /*
                     We have arguments, these may be:
-                    true -> run immediately, don't wait for document ready
-                    false -> don't run, just return this
                     String -> bind to String event to run the scan
                     String, hash -> execute String method and pass hash
           */

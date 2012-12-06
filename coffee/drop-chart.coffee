@@ -9,6 +9,7 @@ $.extend $.fn,
 
   dropchart: (drop_arg, obj_hash) ->
 
+    debugger
     class ChartFetcher
 
       charts: []
@@ -37,7 +38,8 @@ $.extend $.fn,
 
       constructor: (@raw) ->
         @palFac = new paletteFactory()
-        @palette = @palFac.getPalette('general')
+        debugger
+        @palette = @palFac.getPalette('earth')
         @type = jQuery(@raw).attr('data-type')
         @source = jQuery(@raw).attr('data-source')
         @fetchData()
@@ -61,9 +63,9 @@ $.extend $.fn,
 
       draw: ->
 
-        w = 600
-        h = 600
-        r = 200
+        w = 1000
+        h = 1000
+        r = 450
         color = @palette
         vis = d3.select(@raw)
           .append("svg:svg")
@@ -101,8 +103,20 @@ $.extend $.fn,
     class paletteFactory
       palettes: {}
       constructor: ->
-        @palettes['general'] = (i) ->
+        @palettes['basic'] = (i) ->
           colors = ["#bc1c5a", "#096ab1", "#f2cf57", "#199468", "#f7230e", "#5f64c8", "#d8f20d", "#12cfb1", "#ffcd04", "#c56156", "#53548e", "#845194", "#4cb9bc", "#2bb673", "#ff9600", "#c72f48", "#65286b", "#69db45", "#0a8dc1", "#fda819", "#ff88df", "#b5ed2c", "#fcf5a5"]
+          colors[i % colors.length]
+
+        @palettes['cool'] = (i) ->
+          colors = ["#26499d", "#92b8e9", "#4b6cbb", "#d4f0ff", "#99b8fb", "#a3cfff", "#0b3eb3", "#5b86f7", "#cbdee2", "#9ec5cc", "#697fef", "#2f50c1", "#6db2ff", "#6691ef", "#d5f0ff", "#7db5d0", "#99c0dd",  "#4584c9", "#9dbdfa","#2d6dd7"]
+          colors[i % colors.length]
+
+        @palettes['warm'] = (i) ->
+          colors = ["#ffae1a","#d0361c","#c52108","#f47202","#dba602","#cd270f","#fcd37b","#ffb314","#d10909","#ffc511","#ec6d20","#e2ab97","#b96632","#d10909","#ea7741","#fc3200","#ffb64c","#790908","#d01a0d","#ffd109"]
+          colors[i % colors.length]
+
+        @palettes['earth'] = (i) ->
+          colors = ["#fbad25","#8f511e","#55763f","#bd8b68","#bb3e28","#d4801e","#ffc233","#616d01","#e6c236","#c4d032","#325a42","#702f11","#6db2ff","#953d27","#8dab9f","#b8b580","#99c296","#4584c9","#732123","#903837"]
           colors[i % colors.length]
 
         #d3 standard palettes
@@ -110,7 +124,6 @@ $.extend $.fn,
         @palettes['category20'] = d3.scale.category20()
         @palettes['category20b'] = d3.scale.category20b()
         @palettes['category20c'] = d3.scale.category20c()
-
 
       registerNewPalette: (paletteName ,palette) ->
         @palettes[paletteName] = palette
@@ -120,6 +133,10 @@ $.extend $.fn,
           @palettes['basic']
         else
           @palettes[palette]
+
+    ###
+      Load up our data object with all needed code and extend jQuery such that it can be called for each calls.
+    ###
     if obj_hash then obj_hash.data = obj_hash else obj_hash = {}
     obj_hash.dropobjects =
       chartfetcher: ChartFetcher
