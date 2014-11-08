@@ -48,6 +48,14 @@ $.extend $.fn,
       fetchData: ->
         @data = window[@source]
 
+    class Bar extends Chart
+    
+      processData: ->
+        #Logic here
+
+      draw: ->
+        #draw logic here    
+
     class Pie extends Chart
 
       processData: ->
