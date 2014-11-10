@@ -54,7 +54,15 @@ $.extend $.fn,
         #Logic here
 
       draw: ->
-        #draw logic here    
+        #draw logic here
+
+    class Line extends Chart
+
+      processData: ->
+        # process Logic
+
+      draw: ->
+        # Draw logic    
 
     class Pie extends Chart
 
