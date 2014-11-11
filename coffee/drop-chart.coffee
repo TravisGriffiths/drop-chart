@@ -51,6 +51,7 @@ $.extend $.fn,
     class Bar extends Chart
     
       processData: ->
+        processed = []
         #Logic here
 
       draw: ->
