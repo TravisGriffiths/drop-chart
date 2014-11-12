@@ -60,6 +60,7 @@ $.extend $.fn,
     class Line extends Chart
 
       processData: ->
+        processed = []
         # process Logic
 
       draw: ->
