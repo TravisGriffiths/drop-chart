@@ -49,5 +49,8 @@ define ['d3'], (d3)->
         else
           @palettes[palette]
 
+      addPalette: (colors) ->
+        # Pass in an array of css colors
+
 
       window.paletteFactory = new paletteFactory
