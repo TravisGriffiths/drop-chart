@@ -9,7 +9,6 @@ $.extend $.fn,
 
   dropchart: (drop_arg, obj_hash) ->
 
-    debugger
     class ChartFetcher
 
       charts: []
